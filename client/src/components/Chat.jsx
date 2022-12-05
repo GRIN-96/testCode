@@ -1,4 +1,5 @@
 import React from "react";
+import { useMemo } from "react";
 import { useEffect } from "react";
 import { useState } from "react";
 import { messageData, messageUpdate } from "./api/Firebase";
@@ -7,8 +8,11 @@ import { messageData, messageUpdate } from "./api/Firebase";
 // const databaseURL = "https://test-project-c773d-default-rtdb.firebaseio.com/";
 
 const Chat = ({ socket, room, username }) => {
+  console.log(socket);
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
+
+  // const data = useMemo(() => messageData(), [messageList]);
 
   // useEffect(() => {
   //   socket.on("messageReturn", (data) => {
@@ -21,16 +25,20 @@ const Chat = ({ socket, room, username }) => {
   useEffect(() => {
     // 파일 리스트 가져오기 .
     const data = messageData();
+
     // data.then((response) => console.log(response));
     // 데이터가 오브젝트 형식으로 오기 때문에 ex ( {1 : {name:~ , message :2~}})
     // value 값만 가져와 리스트로 만들어주는 작업이 필요하다 . // Object.value(response)
-    // data.then((response) => console.log(Object.values(response)));
-    data.then((response) => setMessageList(Object.values(response)));
-
-    // 메세지를 주고 받을 때마다 화면 아래로 스크롤
+    // data.then((response) => console.log(messageList));
+    data.then((response) => {
+      const tempRes = Object.values(response);
+      if (JSON.stringify(tempRes) !== JSON.stringify(messageList)) {
+        setMessageList(tempRes);
+      }
+    });
     let chat = document.querySelector("#chat");
     chat.scrollTop = chat.scrollHeight;
-  });
+  }, [messageList]);
 
   // 소켓에 message를 담아 서버에 전달 !
   const sendMessage = async () => {
@@ -44,15 +52,25 @@ const Chat = ({ socket, room, username }) => {
         new Date(Date.now()).getMinutes(),
     };
     // messageContent 값이 먼저 정의 된 후 메세지 전달.
-    socket.emit("message", messageContent);
+    await socket.emit("message", messageContent);
     // 메세지 리스트에 방금 보낸 메세지도 함께 추가.
-    // setMessageList((prev) => [...prev, messageContent]);
-
+    setMessageList((prev) => [...prev, messageContent]);
+    // setMessageList([]);
     // fireBase에 메세지 내용 추가
     messageUpdate(messageContent);
     setMessage("");
   };
 
+  // // 새롭게 변경된 메세지 리스트 가져오기
+  // useEffect(() => {
+  //   const addData = messageData();
+  //   addData.then((response) => setMessageList(response));
+  //   // 메세지를 주고 받을 때마다 화면 아래로 스크롤
+  //   let chat = document.querySelector("#chat");
+  //   chat.scrollTop = chat.scrollHeight;
+  // }, [sendMessage]);
+
+  // enter 키를 눌러도 메세지가 전달되도록 하는 함수.
   const onKeyPress = (e) => {
     if (e.key === "Enter") {
       sendMessage();
