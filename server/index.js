@@ -37,7 +37,7 @@ io.on("connection", (socket) => {
   // 서버에서 받아온 소켓의 값을 읽어오기 !
   // -> 전달한 메세지 읽어오기
   socket.on("message", (data) => {
-    // console.log(data, "dataaa"); //서버에 전달된것 확인
+    console.log(data, "dataaa"); //서버에 전달된것 확인
     // 받아온 메세지를 읽은 후 바로 보내줌
     // console.log(data)
     socket.to(data.room).emit("messageReturn", data);
