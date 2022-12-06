@@ -1,12 +1,23 @@
 const express = require("express");
 const cors = require("cors");
+const app = express();
 const http = require("http");
 const { Server } = require("socket.io");
-const { Socket } = require("dgram");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 // 모든 도메인에게 서버에 요정 및 응답을 받을 수 있도록 해주는 기능
-const app = express();
 app.use(cors());
+
+// app.use(
+//   createProxyMiddleware({
+//     // proxy할 주소, 즉, 백단의 주소를 적어줍니다.
+//     target: "http://localhost:9999",
+//     changeOrigin: true,
+//   })
+// );
+
+// const path = __dirname + "../client/index.html";
+// app.use(express.static(path));
 
 // 서버 생성 - 변수에 담아주는 이유 ?
 // http.createServer() 메소드가 생성후 객체를 리턴하기 때문
@@ -17,7 +28,8 @@ const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
     // // cose 정책에 따라 해당 서버 접근 허용
-    origin: "*",
+    origin: true,
+    credentials: true,
     methods: ["GET", "POST"], // 요청방식
   },
 });
