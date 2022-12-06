@@ -5,7 +5,7 @@ import Room from "./components/Room";
 import io from "socket.io-client";
 
 // express 9999 서버에 데이터를 전달해주는 socket 객체 생성.
-const socket = io.connect("http://localhost:9999");
+const socket = io.connect("http://192.168.0.25:9999");
 function App() {
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
