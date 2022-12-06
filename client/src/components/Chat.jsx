@@ -34,6 +34,7 @@ const Chat = ({ socket, room, username }) => {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
 
+  // 상대방이 보낸 메세지를 신호를 감지해 내 리스트에 추가하여 말풍선을 뿌려주는 함수.
   useEffect(() => {
     socket.on("messageReturn", (data) => {
       // console.log(data);
@@ -46,7 +47,8 @@ const Chat = ({ socket, room, username }) => {
     chat.scrollTop = chat.scrollHeight;
   }, [messageList]);
 
-  // 소켓에 message를 담아 서버에 전달 !
+  // 내 리스트에 message data 추가 후
+  // 소켓에 message data를 담아 서버에 전달 !
   const sendMessage = async () => {
     const messageContent = {
       username: username,
