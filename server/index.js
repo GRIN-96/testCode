@@ -36,11 +36,11 @@ const io = new Server(server, {
 
 // 연결 io 생성
 io.on("connection", (socket) => {
-  console.log(socket.id);
+  // console.log(socket.id);
 
   // 서버에서 받아온 소켓의 값(roon no)을 읽어오는 코드 !
   socket.on("room", (data) => {
-    console.log(data);
+    console.log(data, "번방 입장입니다 !");
     // 소켓에게 입력한 데이터값 전달.
     // 같은 룸으로 채팅방 참여
     socket.join(data);
@@ -49,10 +49,10 @@ io.on("connection", (socket) => {
   // 서버에서 받아온 소켓의 값을 읽어오기 !
   // -> 전달한 메세지 읽어오기
   socket.on("message", (data) => {
-    console.log(data, "dataaa"); //서버에 전달된것 확인
+    // console.log(data, "dataaa"); //서버에 전달된것 확인
     // 받아온 메세지를 읽은 후 바로 보내줌
     // console.log(data)
-    socket.to(data.room).emit("messageReturn", data);
+    socket.to(data.room).emit("return", data);
   });
 });
 
