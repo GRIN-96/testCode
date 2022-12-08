@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/73ff7572-7cae-4d03-95a3-0ee70cdb7891/AppServices/subscriptions/73ff7572-7cae-4d03-95a3-0ee70cdb7891/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/gugu-server",
+  "appService.deploySubpath": "."
+}

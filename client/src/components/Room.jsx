@@ -8,7 +8,7 @@ const Room = ({
   setChatScreen,
   socket,
 }) => {
-  // 입력한 유저 네임과 , 룸 no 에 관한 정보 보내주는 함수 !
+  // 룸 no 에 관한 정보 보내주는 함수 !
   const sendRoom = () => {
     socket.emit("room", room);
     setChatScreen(true);

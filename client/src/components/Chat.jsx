@@ -7,6 +7,7 @@ import { Button } from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import PopupState, { bindTrigger, bindMenu } from "material-ui-popup-state";
+import { serverTimestamp } from "firebase/firestore";
 
 // 내가 만든 firebase의 프로젝트의 URL 이다.
 // const databaseURL = "https://test-project-c773d-default-rtdb.firebaseio.com/";
@@ -36,12 +37,13 @@ const Chat = ({ socket, room, username }) => {
 
   // 상대방이 보낸 메세지를 신호를 감지해 내 리스트에 추가하여 말풍선을 뿌려주는 함수.
   useEffect(() => {
-    socket.on("messageReturn", (data) => {
+    socket.on("return", (data) => {
       // console.log(data);
       setMessageList((prev) => [...prev, data]);
     });
   }, [socket]);
 
+  // 새로운 채팅이 생성되면 스크롤를 최하단으로 내려줌.
   useEffect(() => {
     let chat = document.querySelector("#chat");
     chat.scrollTop = chat.scrollHeight;
@@ -54,10 +56,10 @@ const Chat = ({ socket, room, username }) => {
       username: username,
       message: message,
       room: room,
-      date:
-        new Date(Date.now()).getHours() +
-        ":" +
-        new Date(Date.now()).getMinutes(),
+      date: new Date().toLocaleString(), // 2022. 12. 7. 오전 11:24:42
+      // new Date(Date.now()).getHours() +
+      // ":" +
+      // new Date(Date.now()).getMinutes(),
     };
     // messageContent 값이 먼저 정의 된 후 메세지 전달.
     await socket.emit("message", messageContent);
@@ -69,6 +71,8 @@ const Chat = ({ socket, room, username }) => {
   const onKeyPress = (e) => {
     if (e.key === "Enter") {
       sendMessage();
+    } else {
+      setMessage(e.target.value);
     }
   };
 
@@ -140,7 +144,7 @@ const Chat = ({ socket, room, username }) => {
             className="w-3/4 h-12 border p-3 outline-none"
             type="text"
             placeholder="message send"
-            onKeyDown={onKeyPress}
+            onKeyPress={onKeyPress}
           />
           <button
             onClick={sendMessage}
